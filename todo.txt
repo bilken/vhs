@@ -1,0 +1,13 @@
+
+It appears that the video is 29.97 or 30 fps even though the v4l2 says 25 (that's just a default)
+I get audio/video glitches if I use 25 but 30 seems smooth.
+
+Why can't I play ffmpeg's ts clips with totem but I can play vlc's? View vlc's underlying command?
+
+Figure out optimal encoder settings quality vs performance
+
+
+Can I merge the blue avoidance into the capture process?
+Can a phone play a ts or mp4 clip?
+Can I make fragmented mp4 directly?
+
