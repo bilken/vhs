@@ -30,15 +30,17 @@ sub save_frame {
     `$cmd`
 }
 
-sub is_blue_pic {
+sub is_blank_pic {
     my ($pic) = @_;
-    my $cmd = "convert tmp/f.jpg -scale 1x1\! -format '%[pixel:u]' info:-";
+    my $cmd = "convert $img -scale 1x1\! -format '%[pixel:u]' info:-";
     my $rgb = `$cmd`;
     printd("cmd[$cmd] rgb[$rgb]\n");
     if ($rgb =~ m/(\d+),(\d+),(\d+)/g) {
         if ($1 < 40 && $2 < 10 && $3 > 200) {
             return 1;
         }
+    } elsif ($rgb =~ m/black/g) {
+        return 1;
     }
     return 0;
 }
@@ -59,26 +61,31 @@ $half_seconds = $seconds / 2;
 $clip_start = 0;
 for (my $i = 1; $i < $half_seconds; $i += $gop)
 {
+    print "\rstart $i";
     save_frame($file, $i, $img);
-    if (not is_blue_pic($img)) {
-        printd("Not blue at $i\n");
+    if (not is_blank_pic($img)) {
+        printd("Not blank at $i\n");
         last;
     }
-    printd("Blue at $i\n");
+    printd("blank at $i\n");
     $clip_start += $gop;
 }
 
+print "\n";
+
 $clip_end = 0;
-for (my $i = 1; $i < $half_seconds; $i += $gop)
+for (my $i = 4; $i < $half_seconds; $i += $gop)
 {
+    print "\rend $i";
     save_frame($file, -$i, $img);
-    if (not is_blue_pic($img)) {
-        printd("Not blue at -$i\n");
+    if (not is_blank_pic($img)) {
+        printd("Not blank at -$i\n");
         last;
     }
-    printd("Blue at -$i\n");
+    printd("Blank at -$i\n");
     $clip_end += $gop;
 }
 
+print "\n";
 print "$file $seconds: start $clip_start, end -$clip_end\n"
 
