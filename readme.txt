@@ -25,7 +25,8 @@ Audio on Linux is such a pain. I had to modify my /etc/pulse/default.pa
 among other non-sensical things. Took a couple hours of fiddling.
 * Audio Input: alsa, hw:1,0
 
-|| tool || description |
+| tool | description |
+| ----- | ----- |
 | ff-cap.sh | Capture video/audio with ffmpeg to a TS (or mp4) |
 | blank-frames.pl | Find blue (the VCR inactive screen) or black (blank video) |
 | hls-byte-range.pl | Given the output of probe.pl, generate an HLS byte-range manifest |
