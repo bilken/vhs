@@ -27,9 +27,11 @@ among other non-sensical things. Took a couple hours of fiddling.
 
 | tool | description |
 | ----- | ----- |
+| auto-capture.pl | Capture video/audio and stop at end of tape |
 | ff-cap.sh | Capture video/audio with ffmpeg to a TS (or mp4) |
 | blank-frames.pl | Find blue (the VCR inactive screen) or black (blank video) |
+| blank-frame.pl | Find blue (the VCR inactive screen) or black (blank video) at a particular location (in seconds) |
 | hls-byte-range.pl | Given the output of probe.pl, generate an HLS byte-range manifest |
 | probe.pl | Find key video frames (pts, time and byte offset) |
+| prune.pl | (TBD) Given start/end parameters, strips 0..start seconds and -end..media_length |
 | vhs-cap.sh | Capture video/audio with vlc to TS (or mp4) |
-
