@@ -1,4 +1,6 @@
-Digitize my home VHS movies
+# Digitize my home VHS movies
+
+## Overview
 
 Primarily, I'm trying to back things up. Secondarily, I'd like my family to be able
 to watch these clips easily at home on their phones or computers. I have a backup
@@ -25,13 +27,56 @@ Audio on Linux is such a pain. I had to modify my /etc/pulse/default.pa
 among other non-sensical things. Took a couple hours of fiddling.
 * Audio Input: alsa, hw:1,0
 
-| tool | description |
-| ----- | ----- |
+## List of scripts
+
+| Tool | Description |
+| ---- | ----------- |
 | auto-capture.pl | Capture video/audio and stop at end of tape |
-| ff-cap.sh | Capture video/audio with ffmpeg to a TS (or mp4) |
 | blank-frames.pl | Find blue (the VCR inactive screen) or black (blank video) |
 | blank-frame.pl | Find blue (the VCR inactive screen) or black (blank video) at a particular location (in seconds) |
 | hls-byte-range.pl | Given the output of probe.pl, generate an HLS byte-range manifest |
 | probe.pl | Find key video frames (pts, time and byte offset) |
-| prune.pl | (TBD) Given start/end parameters, strips 0..start seconds and -end..media_length |
-| vhs-cap.sh | Capture video/audio with vlc to TS (or mp4) |
+| makefile.web | Build m3u8 manifest (and other things) for each encoded clip |
+| web/scripts/manifest.py | Create/modify json metadata blob for a clip |
+
+## Software Dependencies
+
+The following items are used during capture and encoding:
+* ffmpeg
+* convert (imagemagick)
+* mediainfo
+
+Things that should already be installed on any normal linux-y system:
+* perl
+* python
+* gnu make
+
+When using the web viewer part (but who besides me would do that?):
+* lighttpd
+
+## How to: Capture and conversion
+
+```
+./auto-capture.pl
+```
+
+Note that this creates the following files:
+* `capture/$datetime.ts`
+* `content/$datetime.ts`
+
+I should probably just delete the capture one, but I've been comparing them
+as I tweak encoding settings.
+
+## Todo Items
+
+1 More automation
+** auto-delete capture/ content after transcode completes successfully
+** run makefile.web after transcode
+** create prune tool to detect blank start/end of clip and modify m3u8 accordingly
+2 Create web page
+** Create page that actually looks nice
+** Use clip image as placeholder
+*** Instead of using hard-coded time, look for first "interesting" image
+** Use clip metadata to sort content (by year or title or other)
+** Update clip metadata form on viewer page
+
