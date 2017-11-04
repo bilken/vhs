@@ -1,0 +1,26 @@
+
+capture_path := capture
+encode_path := content
+
+captures := $(wildcard $(capture_path)/*.ts)
+encodes := $(patsubst $(capture_path)/%, $(encode_path)/%, $(captures))
+
+PHONY : all default install clean
+all default install : $(encodes)
+
+CPU_COUNT := 4
+
+ENCODE_PARAMS := \
+ -vcodec libx264 -g 6 -x264opts crf=18:keyint=150 -preset slow \
+ -maxrate 2.5M -bufsize 5M \
+ -vsync cfr \
+ -acodec copy \
+ -threads $(CPU_COUNT)
+
+# This rule writes to tmp.* so that make doesn't delete it on ctrl-c.
+# Then it renames the file to the intended target.
+$(encode_path)/%.ts : $(capture_path)/%.ts
+	@mkdir -p $(dir $@)
+	ffmpeg -y -i $< $(ENCODE_PARAMS) tmp.$@
+	mv tmp.$@ $@
+

@@ -19,8 +19,10 @@ server with some static-ish pages and a player to serve segmented content.
 
 At first, I was using vlc for encoding, but I switched to ffmpeg.
 
-Video just worked. Well, it presents as 25 fps and 720x576 when I think it's
-really 30 fps (or maybe 29.97):
+Video just worked. Well, it presents as 25 fps and 720x576. But ffmpeg seems
+to not run right on it's own there. I have to manually override the input
+and output frame rate at 25. Took me a while to figure that out. Even then
+it wants to use "variable frame rate". Not sure why this is complicated.
 * Video Input: f4l2, /dev/video0
 
 Audio on Linux is such a pain. I had to modify my /etc/pulse/default.pa
@@ -56,16 +58,20 @@ When using the web viewer part (but who besides me would do that?):
 
 ## How to: Capture and conversion
 
+To capture content to a new file, `capture/$datetime.ts`:
 ```
-./auto-capture.pl
+    ./auto-capture.pl
 ```
 
-Note that this creates the following files:
-* `capture/$datetime.ts`
-* `content/$datetime.ts`
+When you have some spare cpu cycles (i.e. when you're not capturing), to encode
+all existing captures to more compressed variants. The new encodes are stored in
+the `content/` directory but have the same name as their sources in `capture/`.
+```
+    make -j 1 -f makefile.encode
+```
 
-I should probably just delete the capture one, but I've been comparing them
-as I tweak encoding settings.
+Note that this process does not (yet) delete captured sources. I've been
+comparing the capture vs content as I tweak encoding settings.
 
 ## Todo Items
 
