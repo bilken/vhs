@@ -38,8 +38,8 @@ sub is_blank_pic {
 }
 
 # Temp file for conversion
-$img = 'tmp/f.jpg';
-`mkdir -p tmp`;
+$img = 'capture/f.jpg';
+`mkdir -p capture`;
 
 save_frame($file, $seconds, $img);
 if (is_blank_pic($img)) {

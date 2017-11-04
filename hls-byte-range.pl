@@ -22,7 +22,7 @@ sub line_to_tuple {
 }
 
 print "#EXTM3U\n";
-print "#EXT-X-TARGETDURATION:10\n";
+print "#EXT-X-TARGETDURATION:6\n";
 print "#EXT-X-MEDIA-SEQUENCE:0\n";
 print "#EXT-X-VERSION:4\n";
 

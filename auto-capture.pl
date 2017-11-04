@@ -35,7 +35,7 @@ sub transcode {
     my ($in_file, $out_file) = @_;
 
     my $vi = "-i $in_file";
-    my $vo = "-vcodec libx264 -r 30 -g 10 -x264opts crf=18:keyint=240 -preset slow" .
+    my $vo = "-vcodec libx264 -r 30 -g 6 -x264opts crf=18:keyint=180 -preset slow" .
              " -maxrate 2.5M -bufsize 5M";
     my $ao = "-acodec copy";
 
@@ -90,7 +90,7 @@ while (weird_read($fh)) {
             last;
         }
     }
-    $next_time = $t;
+    $next_time = $t + 5;
 }
 kill SIGINT, $pid;
 close($fh);
