@@ -1,0 +1,59 @@
+
+org_clip_path := ${CURDIR}/content
+web_path := web
+web_script_path := $(web_path)/scripts
+web_content_path := $(web_path)/content
+web_clip_path := $(web_content_path)/clips
+manifest_clip_path := $(patsubst $(web_content_path)/%,%,$(web_clip_path))
+
+pre_clips := $(wildcard $(org_clip_path)/*.ts)
+ifeq ($(pre_clips),)
+$(error No clips found at $(org_clip_path)/)
+endif
+
+# The clips (in the linked web path)
+web_clips := $(patsubst $(org_clip_path)/%, $(web_clip_path)/%, $(pre_clips))
+
+# The IDR frame probe listing for each clip
+probes := $(patsubst $(web_clip_path)/%.ts, $(web_content_path)/%.probe, $(web_clips))
+
+# A preview image for each clip
+jpgs := $(patsubst %.probe, %.jpg, $(probes))
+
+# The byte-range HLS child manifest
+m3u8s := $(patsubst %.probe, %.m3u8, $(probes))
+
+# The metadata file for web viewing (title, date, etc.), for web cgi consumption
+metas := $(patsubst %.m3u8, %.meta, $(m3u8s))
+
+# The list of all the things for webbing
+web_list := $(web_content_path)/meta.txt
+
+.PHONY : all default install link_web_clips help
+all default install : $(web_list) $(m3u8s) $(jpgs)
+
+$(web_list) : $(web_clips) $(metas) $(m3u8s) $(probes) $(jpgs)
+	echo $(filter %.m3u8, $^) | xargs -n 1 > $@
+
+%.meta : %.m3u8
+	python $(web_script_path)/metadata.py $@
+
+%.m3u8 : %.probe
+	cat $< | ./hls-byte-range.pl $(manifest_clip_path)/$(patsubst %.m3u8,%.ts,$(notdir $@)) > $@
+
+$(web_content_path)%.probe : $(web_clip_path)%.ts
+	./probe.pl $< > $@
+
+$(web_content_path)%.jpg : $(web_clip_path)%.ts
+	ffmpeg -loglevel panic -ss 15 -i $< -frames:v 1 $@ -y
+
+# These 'order-only dependencies' are only run once if the clips don't exist
+$(web_clips) : | $(web_content_path) $(web_clip_path)
+$(web_content_path) :
+	mkdir -p $(web_content_path)
+$(web_clip_path) :
+	ln -s $(org_clip_path) $(web_clip_path)
+
+help :
+	@echo Build web accessible versions of video content
+
