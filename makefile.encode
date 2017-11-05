@@ -5,14 +5,14 @@ encode_path := content
 captures := $(wildcard $(capture_path)/*.ts)
 encodes := $(patsubst $(capture_path)/%, $(encode_path)/%, $(captures))
 
-PHONY : all default install clean
+.PHONY : all default install clean
 all default install : $(encodes)
 
 CPU_COUNT := 4
 
 ENCODE_PARAMS := \
  -vcodec libx264 -g 6 -x264opts crf=18:keyint=150 -preset slow \
- -maxrate 2.5M -bufsize 5M \
+ -maxrate 2M -bufsize 4M \
  -vsync cfr \
  -acodec copy \
  -threads $(CPU_COUNT)

@@ -9,12 +9,18 @@
 #
 # I didn't see evidence that a higher bitrate leads to better quality.
 # It's just VHS/composite, after all.
+#
+# Note that blank frame detection relies on keyint/framerate as the
+# number of seconds to check (roughly). The "$max_gop".
+my $max_gop = 8;
 
 sub start_capture {
     my ($out_file) = @_;
 
-    my $vi = "-f v4l2 -r 25 -i /dev/video0";
-    my $vo = "-vcodec libx264 -r 25 -x264opts crf=18 -preset ultrafast" .
+    my $fr = 25;
+    my $keyint = $max_gop * $fr;
+    my $vi = "-f v4l2 -r $fr -i /dev/video0";
+    my $vo = "-vcodec libx264 -r $fr -x264opts crf=18:keyint=$keyint -preset ultrafast" .
              " -aspect 4:3 -pix_fmt yuv420p" .
              " -maxrate 10M -bufsize 20M";
     my $ai = "-f alsa -i hw:1,0";
@@ -64,15 +70,15 @@ while (weird_read($fh)) {
         next;
     }
 
-    $r = system($bf, $capture_file, -10);
+    $r = system($bf, $capture_file, -($max_gop*2));
     if ($r == 0) {
-        $r = system($bf, $capture_file, -5);
+        $r = system($bf, $capture_file, -$max_gop);
         if ($r == 0) {
             print "Found two consecutive blank frames at end of clip\n";
             last;
         }
     }
-    $next_time = $t + 5;
+    $next_time = $t + $max_gop;
 }
 kill SIGINT, $pid;
 close($fh);
