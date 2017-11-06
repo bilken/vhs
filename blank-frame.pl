@@ -7,7 +7,7 @@ if (not defined $file or not defined $seconds) {
 }
 
 sub printd {
-    #print @_;
+    print @_;
 }
 
 sub save_frame {
@@ -17,14 +17,14 @@ sub save_frame {
     if ($seconds < 0) {
         $seek_opt = "-sseof";
     }
-    $cmd = "ffmpeg -loglevel panic $seek_opt $seconds -i $file -frames:v 1 $img -y";
+    $cmd = "ffmpeg -loglevel panic $seek_opt $seconds -i $file -frames:v 1 $pic -y";
     printd("cmd[$cmd]\n");
     `$cmd`
 }
 
 sub is_blank_pic {
     my ($pic) = @_;
-    my $cmd = "convert $img -scale 1x1\! -format '%[pixel:u]' info:-";
+    my $cmd = "convert $pic -scale 1x1\! -format '%[pixel:u]' info:-";
     my $rgb = `$cmd`;
     printd("cmd[$cmd] rgb[$rgb]\n");
     if ($rgb =~ m/(\d+),(\d+),(\d+)/g) {

@@ -12,7 +12,7 @@ CPU_COUNT := 4
 
 ENCODE_PARAMS := \
  -vcodec libx264 -g 6 -x264opts crf=18:keyint=150 -preset slow \
- -maxrate 2M -bufsize 4M \
+ -maxrate 1.5M -bufsize 3M \
  -vsync cfr \
  -acodec copy \
  -threads $(CPU_COUNT)
@@ -21,6 +21,6 @@ ENCODE_PARAMS := \
 # Then it renames the file to the intended target.
 $(encode_path)/%.ts : $(capture_path)/%.ts
 	@mkdir -p $(dir $@)
-	ffmpeg -y -i $< $(ENCODE_PARAMS) tmp.$@
-	mv tmp.$@ $@
+	ffmpeg -y -i $< $(ENCODE_PARAMS) $(dir $@)/tmp.$(notdir $@)
+	mv $(dir $@)/tmp.$(notdir $@) $@
 
