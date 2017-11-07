@@ -13,35 +13,42 @@
 sub capture {
     my ($out_file, $out_image, $image_seconds) = @_;
 
-    my $fr = 25;
+    my $fr = 26;
     my @cmd = (
         "ffmpeg",
         # overwrite file name at end
         "-y",
         # Lots of things going on, let there be many threads
         "-threads", "auto",
+
         # Video input, force frame rate to be $fr, use medium queue
-        #"-thread_queue_size", "32",
-        "-r", "$fr",
-        "-f", "v4l2", "-ts", "abs", "-i", "/dev/video0",
+        "-f", "v4l2",
+        "-standard", "NTSC",
+        "-thread_queue_size", "512",
+        "-ts", "abs",
+        "-i", "/dev/video0",
+
         # Audio input, use larger queue
-        "-thread_queue_size", "256",
-        "-f", "alsa", "-i", "hw:1,0",
-        #"-force_key_frames", "00:00:00.000",
+        "-f", "alsa",
+        "-thread_queue_size", "512",
+        "-i", "hw:1,0",
+
         # Video encoding parameters
+        "-vcodec", "libx264",
+        "-preset", "superfast",
+        "-crf", "18",
+        "-aspect", "4:3",
+        "-pix_fmt", "yuv420p",
         "-r", "$fr",
-        "-vcodec", "libx264", "-x264opts", "crf=18",
-        "-preset", "ultrafast",
-        "-aspect", "4:3", "-pix_fmt", "yuv420p",
         "-maxrate", "8M", "-bufsize", "16M",
-        #"-vsync", "1",
+
         # Audio encoding parameters
-        "-acodec", "aac", "-ac", "2", "-ar", "48000",
-        "-async", "1",
+        "-acodec", "libmp3lame", "-b:a", "128k", "-ac", "2", "-ar", "48000",
+
         "$out_file",
 
         # Output image parameters
-        "-an", "-r", "1/$image_seconds", "-vf", "scale=-1:72", "-updatefirst", "1", "$out_image",
+        "-an", "-r", "1/$image_seconds", "-vf", "scale=-1:144", "-updatefirst", "1", "$out_image",
     );
 
     print "Command: @cmd\n";
@@ -69,7 +76,7 @@ chomp($dt);
 
 `mkdir -p capture`;
 
-my $capture_file = "capture/$dt.ts";
+my $capture_file = "capture/$dt.mkv";
 my $preview_image = "capture/preview.jpg";
 my $preview_seconds = 4;
 my $max_blanks = 4; # Max $preview_seconds*$max_blanks seconds before quit
