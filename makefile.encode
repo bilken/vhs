@@ -2,8 +2,10 @@
 capture_path := capture
 encode_path := content
 
+ext := ts
+
 captures := $(wildcard $(capture_path)/*.mkv)
-encodes := $(patsubst $(capture_path)/%.mkv, $(encode_path)/%.ts, $(captures))
+encodes := $(patsubst $(capture_path)/%.mkv, $(encode_path)/%.$(ext), $(captures))
 
 .PHONY : all default install clean
 all default install : $(encodes)
@@ -13,10 +15,11 @@ ENCODE_PARAMS := \
  -vcodec libx264 -g 5 -x264opts crf=18:keyint=150 -preset slow \
  -maxrate 1.5M -bufsize 3M \
  -acodec aac \
+ -vsync 2 \
 
 # This rule writes to tmp.* so that make doesn't delete it on ctrl-c.
 # Then it renames the file to the intended target.
-$(encode_path)/%.ts : $(capture_path)/%.mkv
+$(encode_path)/%.$(ext) : $(capture_path)/%.mkv
 	@mkdir -p $(dir $@)
 	ffmpeg -y -i $< $(ENCODE_PARAMS) $(dir $@)/tmp.$(notdir $@)
 	mv $(dir $@)/tmp.$(notdir $@) $@

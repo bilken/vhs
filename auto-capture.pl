@@ -23,10 +23,13 @@ sub capture {
 
         # Video input, force frame rate to be $fr, use medium queue
         "-f", "v4l2",
-        "-standard", "NTSC",
+        #"-standard", "NTSC",
         "-thread_queue_size", "512",
-        "-ts", "abs",
+        #"-ts", "abs",
         "-i", "/dev/video0",
+
+        # Output image parameters
+        "-an", "-r", "1/$image_seconds", "-vf", "scale=-1:144", "-atomic_writing", "1", "-updatefirst", "1", "$out_image",
 
         # Audio input, use larger queue
         "-f", "alsa",
@@ -39,16 +42,13 @@ sub capture {
         "-crf", "18",
         "-aspect", "4:3",
         "-pix_fmt", "yuv420p",
-        "-r", "$fr",
-        "-maxrate", "8M", "-bufsize", "16M",
+        "-vf", "fps=fps=$fr",
+        "-maxrate", "4M", "-bufsize", "8M",
 
         # Audio encoding parameters
         "-acodec", "libmp3lame", "-b:a", "128k", "-ac", "2", "-ar", "48000",
 
         "$out_file",
-
-        # Output image parameters
-        "-an", "-r", "1/$image_seconds", "-vf", "scale=-1:144", "-updatefirst", "1", "$out_image",
     );
 
     print "Command: @cmd\n";
@@ -63,6 +63,8 @@ sub is_blank_pic {
     my $rgb = `$cmd`;
     if ($rgb =~ m/(\d+),(\d+),(\d+)/g) {
         if ($1 < 40 && $2 < 10 && $3 > 200) {
+            return 1;
+        } elsif ($1 <= 1 && $2 <= 1 && $3 <= 1) {
             return 1;
         }
     } elsif ($rgb =~ m/black/g) {
@@ -79,7 +81,7 @@ chomp($dt);
 my $capture_file = "capture/$dt.mkv";
 my $preview_image = "capture/preview.jpg";
 my $preview_seconds = 4;
-my $max_blanks = 4; # Max $preview_seconds*$max_blanks seconds before quit
+my $max_blank_seconds = 20; # Max blank seconds before auto quit
 
 # Fork off the ffmpeg capture process
 my $pid = fork();
@@ -91,16 +93,14 @@ if (!$pid) {
 # Watch the preview image. If too many consecutive previews
 # are blank, then stop the capture.
 my $next_time = time() + $preview_seconds*3;
-my $blank_count = 0;
+my $blank_stop_time = 0;
 
 # For WNOHANG
 use POSIX ":sys_wait_h";
 
 while (1) {
-    my $time_left = $next_time - time();
-    while ($time_left > 0) {
-        sleep $time_left;
-        $time_left = $next_time - time();
+    while (time() < $next_time) {
+        sleep($next_time - time());
     }
 
     my $res = waitpid($pid, WNOHANG);
@@ -109,17 +109,19 @@ while (1) {
     }
 
     if (is_blank_pic($preview_image)) {
-        $blank_count++;
-        if ($blank_count >= $max_blanks) {
-            print "\nFound $blank_count consecutive blank frames\n";
+        if ($blank_stop_time == 0) {
+            $blank_stop_time = $next_time + $max_blank_seconds;
+        }
+        if ($next_time >= $blank_stop_time) {
+            print "\nFound $max_blank_seconds consecutive blank seconds\n";
             print "Killing pid $pid\n";
             kill SIGINT, $pid;
             last;
         }
     } else {
-        $blank_count = 0;
+        $blank_stop_time = 0;
     }
-    $next_time = $t + $preview_seconds;
+    $next_time = $next_time + $preview_seconds;
 }
 
 print "\nWaiting for ffmpeg($pid) to finish\n";
