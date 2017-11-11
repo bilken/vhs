@@ -38,6 +38,7 @@ among other non-sensical things. Took a couple hours of fiddling.
 | blank-frame.pl | Find blue (the VCR inactive screen) or black (blank video) at a particular location (in seconds) |
 | hls-byte-range.pl | Given the output of probe.pl, generate an HLS byte-range manifest |
 | probe.pl | Find key video frames (pts, time and byte offset) |
+| makefile.encode | Build compressed content from captures (after auto-capture.pl) |
 | makefile.web | Build m3u8 manifest (and other things) for each encoded clip |
 | web/scripts/manifest.py | Create/modify json metadata blob for a clip |
 
@@ -85,4 +86,6 @@ comparing the capture vs content as I tweak encoding settings.
 *** Instead of using hard-coded time, look for first "interesting" image
 ** Use clip metadata to sort content (by year or title or other)
 ** Update clip metadata form on viewer page
+** Highlight clips that point to specific sections of content in addition
+    to full clips (like, Karen falling at the wedding, etc.)
 

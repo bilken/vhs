@@ -11,6 +11,7 @@ encodes := $(patsubst $(capture_path)/%.mkv, $(encode_path)/%.$(ext), $(captures
 all default install : $(encodes)
 
 ENCODE_PARAMS := \
+ -hide_banner \
  -threads auto \
  -vcodec libx264 -g 5 -x264opts crf=18:keyint=150 -preset slow \
  -maxrate 1.5M -bufsize 3M \
@@ -18,7 +19,6 @@ ENCODE_PARAMS := \
  -vsync 2 \
 
 # This rule writes to tmp.* so that make doesn't delete it on ctrl-c.
-# Then it renames the file to the intended target.
 $(encode_path)/%.$(ext) : $(capture_path)/%.mkv
 	@mkdir -p $(dir $@)
 	ffmpeg -y -i $< $(ENCODE_PARAMS) $(dir $@)/tmp.$(notdir $@)

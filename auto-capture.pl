@@ -18,6 +18,8 @@ sub capture {
         "ffmpeg",
         # overwrite file name at end
         "-y",
+        "-hide_banner",
+
         # Lots of things going on, let there be many threads
         "-threads", "auto",
 

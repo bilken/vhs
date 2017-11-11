@@ -29,7 +29,7 @@ print "#EXT-X-VERSION:4\n";
 sub print_segment {
     my ($time, $pos, $length) = @_;
     printf("#EXTINF:%.1f\n", $time - $last_time);
-    print("EXT-X-BYTERANGE:$length\@$pos\n");
+    print("#EXT-X-BYTERANGE:$length\@$pos\n");
     print("$file\n");
 }
 
