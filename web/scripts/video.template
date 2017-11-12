@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{title}</title>
+    <link href="http://vjs.zencdn.net/5.19/video-js.css" rel="stylesheet">
+    <script src="http://vjs.zencdn.net/ie8/1.1/videojs-ie8.min.js"></script>
+    <script src="http://vjs.zencdn.net/5.19/video.js"></script>
+    <script src="/js/videojs-contrib-hls.min.js"></script>
+</head>
+<body>
+
+<video id="{hls}"
+    class="video-js vjs-default-skin"
+    controls preload="none" width="720" height="576"
+    poster="{jpg}"
+    data-setup='{}'>
+  <source src="{hls}" type="application/x-mpegURL">
+  <p class="vjs-no-js">
+    To view this video please enable JavaScript, and consider upgrading
+    to a web browser that
+    <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+  </p>
+</video>
+
+</body>
+</html>
+

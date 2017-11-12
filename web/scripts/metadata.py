@@ -15,7 +15,7 @@ metadata.py [--field=name[:value]] filename.meta
 """
 
 try:
-    opts, args = getopt.getopt(sys.argv[1:], "hf:", ['field='])
+    opts, args = getopt.getopt(sys.argv[1:], "hf:P", ['field='])
 except getopt.GetoptError:
     print help_text
     sys.exit(1)
@@ -24,9 +24,12 @@ if len(args) != 1:
     print 'Please specify a single metadata file to read/write'
     sys.exit(1)
 
+# Fields from original file
 org_json = {}
+
+# Modified fiels (org/starting fields + mod fields)
 mod_json = {'title':'', 'year':''}
-out_json = {}
+
 try:
     with open(args[0]) as org_file:
         org_json = json.load(org_file)
@@ -35,27 +38,28 @@ except:
     pass    # will get written later
 
 filename = args[0]
-starting_fields = ['title', 'year']
+print_and_exit = False
 
-fields_used = False
 for opt, arg in opts:
     if opt == '-h':
         print help_text
         sys.exit(0)
+    if opt == '-P':
+        print_and_exit = True
     if opt in ('-f', '--field'):
-        fields_used = True
-        (field, value) = ':'.split(arg)
+        field_parts = arg.split(':')
+        field = field_parts[0]
+        value = field_parts[1] if len(field_parts) > 1 else None
+
         if value:
             mod_json[field] = value
         elif field in mod_json:
             value = mod_json[field]
         else:
             value = ''
-        out_json[field] = value
-
-if out_json:
-    print json.dumps(out_json)
-    sys.exit(0)
+        if print_and_exit:
+            print value
+            exit(0)
 
 # If the json blob has changed, rewrite the file
 if org_json != mod_json:

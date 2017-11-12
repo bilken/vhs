@@ -27,14 +27,25 @@ print "#EXT-X-MEDIA-SEQUENCE:0\n";
 print "#EXT-X-VERSION:4\n";
 
 sub print_segment {
-    my ($time, $pos, $length) = @_;
-    printf("#EXTINF:%.1f\n", $time - $last_time);
+    my ($duration, $pos, $length) = @_;
+    printf("#EXTINF:%.1f\n", $duration);
     print("#EXT-X-BYTERANGE:$length\@$pos\n");
     print("$file\n");
 }
 
+sub hour_minute_seconds {
+    my ($time) = @_;
+    $hms = sprintf("%02u:%02u:%02u.%03u",
+        $time / 60 / 60,
+        ($time / 60) % 60,
+        $time % 60,
+        ($time * 1000) % 1000);
+    return $hms;
+}
+
 my $file_size = -s $file;
 
+my $next_pdt_time = 0;
 my $last_time = 0;
 my $last_pos = 0;
 while (<STDIN>) {
@@ -44,6 +55,14 @@ while (<STDIN>) {
     if ($pos < 0) {
 #print "Failed $line\n";
         next;
+    }
+    if ($next_pdt_time == 0) {
+        $next_pdt_time = $time;
+    }
+    if ($time >= $next_pdt_time) {
+        my $hms = hour_minute_seconds($time);
+        print("#EXT-X-PROGRAM-DATE-TIME:2017-11-12T$hms+08:00\n");
+        $next_pdt_time += 30;
     }
     if ($last_time != 0) {
         print_segment($time - $last_time, $last_pos, $pos - $last_pos);
