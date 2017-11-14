@@ -11,6 +11,8 @@ pre_clips := $(shell find $(org_clip_path) -type f -name '*.ts')
 $(if $(pre_clips),,$(error No clips found at $(org_clip_path)/))
 
 # The clips (in the linked web path)
+# Note how they're relative to the root of the org_clip_path
+# Sub-directories from org_clip_path will be mirrored in the content_path
 clips := $(patsubst $(org_clip_path)/%, $(content_path)/%, $(pre_clips))
 
 # The IDR frame probe listing for each clip
@@ -32,7 +34,7 @@ htmls := $(patsubst %.meta, %.html, $(metas))
 root_html := vhs.html
 
 
-.PHONY : all default install help clips
+.PHONY : all default install help clips clean
 all default install : $(root_html)
 clips : $(clips)
 
@@ -47,26 +49,43 @@ $(root_html) : $(clips) $(htmls) $(metas) $(m3u8s) $(probes) $(jpgs)
         done;
 	echo "</body></html>" >> $@
 
-%.html : %.meta %.m3u8 %.jpg
-	python $(script_path)/create_video_html.py $< $(addprefix /,$(filter-out %.meta,$^)) > $@
+%.html : %.meta $(script_path)/create_video_html.py $(script_path)/video.template
+	python $(script_path)/create_video_html.py $< > $@
 
 # The touch fixes the case where it doesn't rewrite since attributes didn't change
-%.meta : %.m3u8
-	python $(script_path)/metadata.py -f "hls:$(notdir $<)" $@
+%.meta : %.m3u8 %.ts %.jpg
+	@echo sources: $^
+	@echo target: $@
+	w=`file $(word 3, $^) | sed 's;.* \([0-9]*\)x\([0-9]*\),.*;\1;g'`; \
+    h=`file $(word 3, $^) | sed 's;.* \([0-9]*\)x\([0-9]*\),.*;\2;g'`; \
+    python $(script_path)/metadata.py \
+        -f "title:$(notdir $(word 1, $^))" \
+        -f "hls:$(notdir $(word 1, $^))" \
+        -f "ts:$(notdir $(word 2, $^))" \
+        -f "jpg:$(notdir $(word 3, $^))" \
+        -f "width:$$w" \
+        -f "height:$$h" \
+        $@
 	touch $@
 
-%.m3u8 : %.probe
-	cat $< | ../hls-byte-range.pl $(patsubst %.m3u8,%.ts,$(notdir $@)) > $@
+%.m3u8 : %.ts %.probe
+	cat $(word 2, $^) | ../hls-byte-range.pl $(notdir $<) > $@
 
-$(content_path)/%.probe : $(content_path)/%.ts
+%.probe : %.ts
 	../probe.pl $< > $@
 
-$(content_path)/%.jpg : $(content_path)/%.ts
+%.jpg : %.ts
 	ffmpeg -loglevel panic -ss 15 -i $< -frames:v 1 $@ -y
 
 $(content_path)/%.ts : $(org_clip_path)/%.ts
 	@mkdir -p $(dir $@)
 	ln -s $< $@
+
+# Clean just the m3u8s. The probes take forever.
+# For a full clean, delete the whole directory. But don't do that or
+# you lose the meta content which will eventually be important.
+clean :
+	rm -f $(m3u8s)
 
 help :
 	@echo Build web accessible versions of TS video content

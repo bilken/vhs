@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import sys
+import os
 import getopt
 import json
 
@@ -33,7 +34,7 @@ mod_json = {'title':'', 'year':''}
 try:
     with open(args[0]) as org_file:
         org_json = json.load(org_file)
-        mod_json = org_json
+        mod_json = dict(org_json)
 except:
     pass    # will get written later
 
@@ -61,13 +62,14 @@ for opt, arg in opts:
             print value
             exit(0)
 
-# If the json blob has changed, rewrite the file
-if org_json != mod_json:
-    with open(args[0], 'w') as f:
-        json.dump(mod_json, f)
-    print json.dumps(mod_json)
-    sys.exit(0)
+#print "org", org_json
+#print "mod", mod_json
 
-print json.dumps(org_json)
+# If the json blob has changed, rewrite the file
+if org_json == mod_json:
+    print json.dumps(org_json)
+else:
+    with open(args[0], 'w') as mod_file:
+        json.dump(mod_json, mod_file)
 sys.exit(0)
 

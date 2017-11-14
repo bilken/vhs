@@ -14,21 +14,24 @@ template_filename = os.path.join(os.path.dirname(__file__), 'video.template')
 with open(template_filename, 'r') as template_file:
     html_template = template_file.read()
 
-if len(sys.argv) != 4:
+if len(sys.argv) != 2:
     print 'Please specify a metadata, m3u8 and jpg file to link'
     sys.exit(1)
 
 with open(sys.argv[1]) as meta_file:
     meta = json.load(meta_file)
 
-hls = sys.argv[2]
-jpg = sys.argv[3]
-title = meta['title'] if 'title' in meta else hls
+path = os.path.dirname(sys.argv[1])
 
-html = html_template.\
+# Note, there has to be an hls or this doesn't work
+title = meta.get('title', meta['hls'])
+
+html = html_template. \
     replace('{title}', title). \
-    replace('{hls}', hls). \
-    replace('{jpg}', jpg)
+    replace('{width}', meta.get('width', '640')). \
+    replace('{height}', meta.get('height', '480')). \
+    replace('{hls}', "%s" % ( meta['hls'])). \
+    replace('{jpg}', "/%s/%s" % (path, meta.get('jpg', '')))
 
 print html
 
