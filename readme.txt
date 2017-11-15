@@ -34,13 +34,17 @@ among other non-sensical things. Took a couple hours of fiddling.
 | Tool | Description |
 | ---- | ----------- |
 | auto-capture.pl | Capture video/audio and stop at end of tape |
-| blank-frames.pl | Find blue (the VCR inactive screen) or black (blank video) |
-| blank-frame.pl | Find blue (the VCR inactive screen) or black (blank video) at a particular location (in seconds) |
-| hls-byte-range.pl | Given the output of probe.pl, generate an HLS byte-range manifest |
-| probe.pl | Find key video frames (pts, time and byte offset) |
-| makefile.encode | Build compressed content from captures (after auto-capture.pl) |
-| makefile.web | Build m3u8 manifest (and other things) for each encoded clip |
-| web/scripts/manifest.py | Create/modify json metadata blob for a clip |
+| makefile | Build compressed content from captures (after auto-capture.pl) |
+| web/makefile | Build m3u8 manifests and html to view encoded clips |
+
+Supporting tools:
+* blank-frames.pl - Find blue (the VCR inactive screen) or black (blank video)
+* blank-frame.pl - Find blue (the VCR inactive screen) or black (blank video) at a particular location (in seconds)
+* hls-byte-range.pl - Given the output of probe.pl, generate an HLS byte-range manifest
+* probe.pl - Find key video frames (pts, time and byte offset)
+* web/scripts/manifest.py - Create/modify json metadata blob for a clip
+* web/scripts/create_video_html.py - Create html for a single clip (will probably go away)
+* web/scripts/create_root_html.py - Create html to link all clips
 
 ## Software Dependencies
 
@@ -53,8 +57,9 @@ Things that should already be installed on any normal linux-y system:
 * perl
 * python
 * gnu make
+* normal unix tools: mv, mkdir, find, file, touch, ln, echo, date, grep, sed
 
-When using the web viewer part (but who besides me would do that?):
+For my web server, using the default config:
 * lighttpd
 
 ## How to: Capture and conversion
@@ -68,7 +73,7 @@ When you have some spare cpu cycles (i.e. when you're not capturing), to encode
 all existing captures to more compressed variants. The new encodes are stored in
 the `content/` directory but have the same name as their sources in `capture/`.
 ```
-    make -j 1 -f makefile.encode
+    make
 ```
 
 Note that this process does not (yet) delete captured sources. I've been
@@ -77,6 +82,7 @@ comparing the capture vs content as I tweak encoding settings.
 ## Todo Items
 
 1 More automation
+** auto-capture could both start and stop automatically (wait for not blank to start)
 ** auto-delete capture/ content after transcode completes successfully
 ** run makefile.web after transcode
 ** create prune tool to detect blank start/end of clip and modify m3u8 accordingly
@@ -88,4 +94,6 @@ comparing the capture vs content as I tweak encoding settings.
 ** Update clip metadata form on viewer page
 ** Highlight clips that point to specific sections of content in addition
     to full clips (like, Karen falling at the wedding, etc.)
+** Link to existing phone mov/mp4 clips
+** Integrate with 8mm capture/encode pipeline
 
