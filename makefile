@@ -1,6 +1,7 @@
 
 capture_path := capture
-encode_path := content
+tmp_path := content
+encode_path := /media/billy/Backup1/vhs/
 
 ext := ts
 
@@ -25,6 +26,6 @@ ENCODE_PARAMS := \
 # This rule writes to tmp.* so that make doesn't delete it on ctrl-c.
 $(encode_path)/%.$(ext) : $(capture_path)/%.mkv
 	@mkdir -p $(dir $@)
-	ffmpeg -y -i $< $(ENCODE_PARAMS) $(dir $@)/tmp.$(notdir $@)
-	mv $(dir $@)/tmp.$(notdir $@) $@
+	ffmpeg -y -i $< $(ENCODE_PARAMS) $(tmp_path)/$(notdir $@)
+	mv $(tmp_path)/$(notdir $@) $@
 

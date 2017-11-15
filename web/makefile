@@ -4,7 +4,7 @@ content_path := content
 script_path := scripts
 
 # The clips in their original path
-org_clip_path := $(if $(CONTENT_PATH),$(CONTENT_PATH),/home/billy/Desktop/vhs/content)
+org_clip_path := $(if $(CONTENT_PATH),$(CONTENT_PATH),/media/billy/Backup1/vhs)
 pre_clips := $(shell find $(org_clip_path) -type f -name '*.ts')
 
 # If there are none, the caller probably goofed up the CONTENT_PATH
@@ -38,16 +38,8 @@ root_html := vhs.html
 all default install : $(root_html)
 clips : $(clips)
 
-$(root_html) : $(clips) $(htmls) $(metas) $(m3u8s) $(probes) $(jpgs)
-	echo "<!DOCTYPE html><html><head><title>Videos</title></head><body>" > $@
-	for n in $(patsubst %.html,%,$(htmls)); do \
-        echo "<div>" >> $@; \
-        echo "  <a href=\"$$n.html\">" >> $@; \
-        echo "    <img src=\"$$n.jpg\" height=\"60\" />" >> $@; \
-        echo "</a>" >> $@; \
-        echo "</div>" >> $@; \
-        done;
-	echo "</body></html>" >> $@
+$(root_html) : $(htmls) $(metas) $(clips) $(m3u8s) $(probes) $(jpgs) $(script_path)/create_root_html.py
+	$(script_path)/create_root_html.py $(metas) > $@
 
 %.html : %.meta $(script_path)/create_video_html.py $(script_path)/video.template
 	python $(script_path)/create_video_html.py $< > $@
