@@ -82,10 +82,12 @@ comparing the capture vs content as I tweak encoding settings.
 ## Todo Items
 
 1 More automation
+** Add title, year, description metadata to auto-capture somehow
 ** auto-capture could both start and stop automatically (wait for not blank to start)
 ** auto-delete capture/ content after transcode completes successfully
 ** run makefile.web after transcode
 ** create prune tool to detect blank start/end of clip and modify m3u8 accordingly
+*** Or just lop the final 20 seconds off since it's almost always blank
 2 Create web page
 ** Create page that actually looks nice
 ** Use clip image as placeholder

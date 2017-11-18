@@ -18,6 +18,8 @@ html_head = """
   <style>
     div.v {
         float: left;
+        width: 200px;
+        height: 160px;
     }
     td {
         text-align: center;
@@ -52,6 +54,7 @@ if len(sys.argv) < 2:
 
 print html_head
 
+metas = []
 for f in sys.argv[1:]:
 
     # The meta file uses relative pathing for m3u8/jpg references
@@ -60,6 +63,11 @@ for f in sys.argv[1:]:
 
     with open(f) as meta_file:
         meta = json.load(meta_file)
+    metas.append(meta)
+
+metas = sorted(metas, key=lambda m: m['year'])
+
+for meta in metas:
 
     # Note, there has to be an hls or this doesn't work
     title = meta.get('title', meta['hls'])
