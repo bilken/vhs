@@ -5,7 +5,14 @@
     <link href="https://unpkg.com/video.js/dist/video-js.css" rel="stylesheet">
     <script src="https://unpkg.com/video.js/dist/video.js"></script>
     <script src="https://unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script>
-
+    <style>
+      video-js .vjs-remaining-time {
+        display: block;
+      }
+      video-js .vjs-current-time {
+        display: block;
+      }
+    </style>
 </head>
 <body>
 
@@ -14,7 +21,7 @@
     class="video-js vjs-default-skin"
     poster="{jpg}"
     preload="auto"
-    data-setup='{}'>
+    data-setup='{"autoplay":true}'>
   <source src="{hls}" type="application/x-mpegURL">
   <p class="vjs-no-js">
     To view this video please enable JavaScript, and consider upgrading

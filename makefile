@@ -1,6 +1,6 @@
 
 capture_path := capture
-tmp_path := content
+tmp_path := $(capture_path)
 encode_path := /media/billy/Backup1/vhs/
 
 ext := ts

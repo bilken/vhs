@@ -90,9 +90,6 @@ comparing the capture vs content as I tweak encoding settings.
 *** Or just lop the final 20 seconds off since it's almost always blank
 2 Create web page
 ** Create page that actually looks nice
-** Use clip image as placeholder
-*** Instead of using hard-coded time, look for first "interesting" image
-** Use clip metadata to sort content (by year or title or other)
 ** Update clip metadata form on viewer page
 ** Highlight clips that point to specific sections of content in addition
     to full clips (like, Karen falling at the wedding, etc.)
