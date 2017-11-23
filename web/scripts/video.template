@@ -6,6 +6,13 @@
     <script src="https://unpkg.com/video.js/dist/video.js"></script>
     <script src="https://unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script>
     <style>
+      body {
+        background-color:black;
+      }
+      div.video {
+        #margin: auto;
+        #width:50%;
+      }
       video-js .vjs-remaining-time {
         display: block;
       }
@@ -16,6 +23,7 @@
 </head>
 <body>
 
+<div class="video">
 <video id=test controls
     width="{width}" height="{height}"
     class="video-js vjs-default-skin"
@@ -29,6 +37,7 @@
     <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
   </p>
 </video>
+</div>
 
 </body>
 </html>
