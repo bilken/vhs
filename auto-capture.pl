@@ -64,7 +64,7 @@ sub is_blank_pic {
     my $cmd = "convert $pic -scale 1x1\! -format '%[pixel:u]' info:- 2>/dev/null";
     my $rgb = `$cmd`;
     if ($rgb =~ m/(\d+),(\d+),(\d+)/g) {
-        if ($1 < 40 && $2 < 10 && $3 > 200) {
+        if ($1 < 40 && $2 < 12 && $3 > 200) {
             return 1;
         } elsif ($1 <= 1 && $2 <= 1 && $3 <= 1) {
             return 1;
