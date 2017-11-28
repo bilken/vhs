@@ -78,10 +78,11 @@ sub is_blank_pic {
 my $dt = `date "+%Y%m%d.%H%M%S"`;
 chomp($dt);
 
-`mkdir -p capture`;
+my $cpath = "capture/vhs";
+`mkdir -p $cpath`;
 
-my $capture_file = "capture/$dt.mkv";
-my $preview_image = "capture/preview.jpg";
+my $capture_file = "$cpath/$dt.mkv";
+my $preview_image = "$cpath/preview.jpg";
 my $preview_seconds = 4;
 my $max_blank_seconds = 20; # Max blank seconds before auto quit
 
