@@ -11,6 +11,7 @@ list=$dt.txt
 for f in $*; do
     echo "file '$f'" >> $list
 done
-ffmpeg -f concat -i $list -c copy $dt.mkv
+#ffmpeg -f concat -i $list -c copy $dt.mkv
+ffmpeg -f concat -i $list -c copy $dt.MP4
 rm $list
 
