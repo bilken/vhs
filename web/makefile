@@ -4,11 +4,15 @@ content_path := content
 script_path := scripts
 
 # The clips in their original path
-org_clip_path := $(if $(CONTENT_PATH),$(CONTENT_PATH),/media/billy/Backup1/vhs)
-pre_clips := $(shell find $(org_clip_path) -type f -name '*.ts')
+org_clip_path := $(if $(CONTENT_PATH),$(CONTENT_PATH),/media/billy/Backup1)
+vhs_clip_path := $(org_clip_path)/vhs
+8mm_clip_path := $(org_clip_path)/8mm
+pre_clips := \
+ $(shell find $(vhs_clip_path) -type f -name '*.ts') \
+ $(shell find $(8mm_clip_path) -type f -name '*.ts') \
 
 # If there are none, the caller probably goofed up the CONTENT_PATH
-$(if $(pre_clips),,$(error No clips found at $(org_clip_path)/))
+$(if $(pre_clips),,$(error No clips found))
 
 # The clips (in the linked web path)
 # Note how they're relative to the root of the org_clip_path

@@ -1,4 +1,4 @@
-# Digitize my home VHS movies
+# Digitize my home movies
 
 ## Overview
 
@@ -9,6 +9,8 @@ movie), I'd like to make them accessible in a segmented format. My first attempt
 is to get it working with HLS and a single TS asset via byte-range. If that
 doesn't work, I might switch to fragmented mp4 (dash or HLS/fmp4). If that
 doesn't work, screw it; I'll just use mp4.
+
+## VHS
 
 I bought a cheap composite video/audio USB adapter off amazon:
 * http://a.co/a7Opzim 
@@ -28,6 +30,17 @@ it wants to use "variable frame rate". Not sure why this is complicated.
 Audio on Linux is such a pain. I had to modify my /etc/pulse/default.pa
 among other non-sensical things. Took a couple hours of fiddling.
 * Audio Input: alsa, hw:1,0
+
+## 8mm
+
+We have a ton of super 8 film. I bouth the "Wolverine Pro" conversion device.
+It generates MP4 clips.
+
+The only issue I had is that my device seems to grab the film a little too
+tight on the capture tray. When that happens, it stalls and generates duplicate
+images (sometimes stalling indefinitely until I manually intervene :-( ).
+The content is also pretty grainy (our cameras weren't very nice), so I
+down-res from 1440x1080 to 720x540 so it looks a little cleaner.
 
 ## List of scripts
 

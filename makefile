@@ -11,7 +11,7 @@ vhss := $(wildcard $(vhs_path)/*.mkv)
 8mms := $(wildcard $(8mm_path)/*.MP4)
 encodes := \
  $(patsubst $(capture_path)/%.mkv, $(encode_path)/%.$(ext), $(vhss)) \
- $(patsubst $(capture_path)/%.mkv, $(encode_path)/%.$(ext), $(8mms)) \
+ $(patsubst $(capture_path)/%.MP4, $(encode_path)/%.$(ext), $(8mms)) \
 
 .PHONY : all default install clean
 all default install : $(encodes)

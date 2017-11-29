@@ -60,12 +60,13 @@ print html_head
 metas = []
 for f in sys.argv[1:]:
 
-    # The meta file uses relative pathing for m3u8/jpg references
-    # so recreate full paths with this where needed
-    path = os.path.dirname(f)
-
     with open(f) as meta_file:
         meta = json.load(meta_file)
+
+    # The meta file uses relative pathing for m3u8/jpg references
+    # so recreate full paths with this where needed
+    meta['path'] = os.path.dirname(f)
+
     metas.append(meta)
 
 metas = sorted(metas, key=lambda m: m['year'])
@@ -85,8 +86,8 @@ for meta in metas:
 
     div = html_video_template. \
         replace('{title}', title). \
-        replace('{html}', "%s/%s" % (path, html)). \
-        replace('{jpg}', "%s/%s" % (path, meta.get('jpg', '')))
+        replace('{html}', "%s/%s" % (meta['path'], html)). \
+        replace('{jpg}', "%s/%s" % (meta['path'], meta.get('jpg', '')))
 
     print div
 
