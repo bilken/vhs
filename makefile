@@ -3,7 +3,7 @@ capture_path := capture
 vhs_path := $(capture_path)/vhs
 8mm_path := $(capture_path)/8mm
 
-encode_path := /media/billy/Backup1/
+encode_path := $(if $(CONTENT_PATH),$(CONTENT_PATH),/media/billy/Backup1)
 
 ext := ts
 
@@ -42,6 +42,7 @@ $(encode_path)/%.$(ext) : $(capture_path)/%.mkv
  -s 720x540 \
  -vf "select='if(gt(scene,0.05),st(1,t),lte(t-ld(1),1))',setpts=N/FRAME_RATE/TB" \
  -vcodec libx264 \
+ -pix_fmt yuv420p \
  -force_key_frames "expr:eq(mod(n,60),0)" \
  -x264opts crf=18:rc-lookahead=60:keyint=120:min-keyint=60 \
  -preset slow \

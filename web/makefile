@@ -71,7 +71,7 @@ $(root_html) : $(htmls) $(metas) $(clips) $(m3u8s) $(probes) $(jpgs) $(script_pa
 	../probe.pl $< > $@
 
 %.jpg : %.ts
-	ffmpeg -loglevel panic -ss 15 -i $< -frames:v 1 $@ -y
+	ffmpeg -ss 5 -i $< -frames:v 1 $@ -y
 
 $(content_path)/%.ts : $(org_clip_path)/%.ts
 	@mkdir -p $(dir $@)
