@@ -35,14 +35,17 @@ $(encode_path)/%.$(ext) : $(capture_path)/%.mkv
 	mv $(dir $<)/$(notdir $@) $@
 
 # The 8mm capture device I have sometimes gets stuck on a frame.
-# The select(...0.05...) piece below removes those fuzzy duplicates with the 0.05 being the tolerance
+# The select(...) piece below removes those fuzzy duplicates with the given tolerance
+# I have it disabled right now because I'd rather ff in the player than lose content
+CUT_DUPLICATES := \
+ -vf "select='if(gt(scene,0.01),st(1,t),lte(t-ld(1),1))',setpts=N/FRAME_RATE/TB" \
+
 # The -i anullsrc=... adds silent audio which fixes the HLS player scrub bar ('cause I'm bad at js)
 8MM_PARAMS := \
  -hide_banner \
  -f lavfi -i anullsrc=channel_layout=stereo:sample_rate=32000 -c:a aac -shortest \
  -threads auto \
  -s 720x540 \
- -vf "select='if(gt(scene,0.05),st(1,t),lte(t-ld(1),1))',setpts=N/FRAME_RATE/TB" \
  -vcodec libx264 \
  -pix_fmt yuv420p \
  -force_key_frames "expr:eq(mod(n,60),0)" \

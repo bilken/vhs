@@ -1,5 +1,5 @@
 #!/bin/bash
 
 #set -x
-grep -l 'year": ""' web/content/*.meta
+grep --include=*.meta -r -l 'year": ""' web
 
