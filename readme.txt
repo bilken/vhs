@@ -33,7 +33,7 @@ among other non-sensical things. Took a couple hours of fiddling.
 
 ## 8mm
 
-We have a ton of super 8 film. I bouth the "Wolverine Pro" conversion device.
+We have a ton of super 8 film. I bought the "Wolverine Pro" conversion device.
 It generates MP4 clips.
 
 The only issue I had is that my device seems to grab the film a little too
@@ -94,6 +94,7 @@ comparing the capture vs content as I tweak encoding settings.
 
 ## Todo Items
 
+0 Backup metadata files
 1 More automation
 ** Add title, year, description metadata to auto-capture somehow
 ** auto-capture could both start and stop automatically (wait for not blank to start)
