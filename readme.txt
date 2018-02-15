@@ -94,19 +94,31 @@ comparing the capture vs content as I tweak encoding settings.
 
 ## Todo Items
 
-0 Backup metadata files
-1 More automation
-** Add title, year, description metadata to auto-capture somehow
+0 Metadata
+** Backup metadata files
+** Use multi-line output that's easier to read/edit by hand
+** Improve format for search (use a db? sigh)
+
+1 Capture automation
 ** auto-capture could both start and stop automatically (wait for not blank to start)
 ** auto-delete capture/ content after transcode completes successfully
-** run makefile.web after transcode
-** create prune tool to detect blank start/end of clip and modify m3u8 accordingly
-*** Or just lop the final 20 seconds off since it's almost always blank
-2 Create web page
+** run web/makefile after transcode
+
+2 Web 
 ** Create page that actually looks nice
-** Update clip metadata form on viewer page
-** Highlight clips that point to specific sections of content in addition
-    to full clips (like, Karen falling at the wedding, etc.)
-** Link to existing phone mov/mp4 clips
-** Integrate with 8mm capture/encode pipeline
+*** Show video inline
+** Update metadata
+*** Update list and frequency of people (Grace:20%, Jacqui:10%, ...)
+*** Edit/create scenes ("Hoo, like that":[03:20,06:30]; etc.)
+** Add search feature for finding things based on metadata content
+
+3 Face recognition
+** Use something like https://github.com/ageitgey/face_recognition, or dlib.net directly
+** Construct a web page so Jacqui can train it herself (who is this? is this also them?...)
+    Mechanical Turk: My Wife
+** Once enough samples exist, process all video and picture files, updating the metadata about
+    who is in them (and how often, for video).
+
+4 Index all photos and videos
+** Put all the above together on my entire photo/video library
 
